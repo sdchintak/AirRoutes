@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import junit.framework.Assert;
+
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -27,8 +28,10 @@ public class RouteJobTest {
 	@Before
 	public void setUp() {
 		RouteMapper mapper = new RouteMapper();
+		RouteReducer reducer = new RouteReducer();
 		
 		mapDriver = new MapDriver(mapper);
+		reduceDriver = new ReduceDriver(reducer);
 	}
 	
 	@Test
@@ -48,4 +51,21 @@ public class RouteJobTest {
 		Assert.assertEquals("Checking INVALID counter value is 1", mapDriver.getCounters().findCounter(COUNTERS.INVALID).getValue(), 1);
 	}
 
+	@Test
+	public void testReducerOK() throws IOException {
+		ArrayList<IntWritable> values = new ArrayList<IntWritable>();
+		values.add(new IntWritable(7));
+		values.add(new IntWritable(2));
+		reduceDriver.withInput(new Text("ATL-PHX"), values);
+		reduceDriver.withOutput(new Text("ATL-PHX"), new DoubleWritable(2.5));
+	}
+	
+	@Test
+	public void testReducerHIGH() throws IOException {
+		ArrayList<IntWritable> values = new ArrayList<IntWritable>();
+		values.add(new IntWritable(678735373));
+		values.add(new IntWritable(739371518));
+		reduceDriver.withInput(new Text("ATL-PHX"), values);
+		reduceDriver.withOutput(new Text("ATL-PHX"), new DoubleWritable(709053445.5));
+	}
 }
