@@ -32,6 +32,7 @@ public class RouteJobTest {
 		
 		mapDriver = new MapDriver(mapper);
 		reduceDriver = new ReduceDriver(reducer);
+		mapreduceDriver = MapReduceDriver.newMapReduceDriver(mapper, reducer);
 	}
 	
 	@Test
@@ -67,5 +68,16 @@ public class RouteJobTest {
 		values.add(new IntWritable(739371518));
 		reduceDriver.withInput(new Text("ATL-PHX"), values);
 		reduceDriver.withOutput(new Text("ATL-PHX"), new DoubleWritable(709053445.5));
+	}
+	
+	@Test
+	public void testMapReduceOK() throws IOException {
+		mapreduceDriver.withInput(new LongWritable(), 
+				new Text("2000,1,28,5,1647,1647,1906,1859,HP,154,N808AW,259,252,233,7,0,ATL,PHX,1587,15,11,0,NA,0,NA,NA,NA,NA,NA"))
+				.withInput(new LongWritable(), 
+				new Text("2000,1,28,5,1647,1647,1906,1859,HP,154,N808AW,259,252,233,2,0,ATL,PHX,1587,15,11,0,NA,0,NA,NA,NA,NA,NA"));
+		
+		mapreduceDriver.withOutput(new Text("ATL-PHX"), new DoubleWritable(4.5));
+		mapreduceDriver.runTest();
 	}
 }
