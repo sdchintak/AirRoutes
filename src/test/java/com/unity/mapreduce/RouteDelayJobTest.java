@@ -20,12 +20,19 @@ import com.unity.mapreduce.RouteDelayMapper;
 public class RouteDelayJobTest {
 	
 	MapDriver<LongWritable, Text, IntWritable, RouteDelay> mapDriver;
+	ReduceDriver<IntWritable, RouteDelay, Text, DoubleWritable> reduceDriver;
+	MapReduceDriver<LongWritable, Text, IntWritable, RouteDelay, Text, DoubleWritable> mapreduceDriver;
+
 
 	@Before
 	public void setUp() {
 		RouteDelayMapper mapper = new RouteDelayMapper();
-		
+		RouteDelayReducer reducer= new RouteDelayReducer();
+
 		mapDriver = new MapDriver(mapper);
+		reduceDriver = new ReduceDriver(reducer);
+		mapreduceDriver = MapReduceDriver.newMapReduceDriver(mapper, reducer);
+
 	}
 	
 	@Test
@@ -35,4 +42,28 @@ public class RouteDelayJobTest {
 		mapDriver.runTest();
 	}
 	
+	@Test
+	public void testReducer() throws IOException {
+		ArrayList<RouteDelay> values = new ArrayList<RouteDelay>();
+		values.add(new RouteDelay("ABQ-BWI",-6.5));
+		values.add(new RouteDelay("ABE-PIT",6.041666666666667));
+		
+		reduceDriver.withInput(new IntWritable(1), values);
+		
+		reduceDriver.withOutput(new Text("ABE-PIT"), new DoubleWritable(6.041666666666667))
+		.withOutput(new Text("ABQ-BWI"), new DoubleWritable(-6.5));
+
+		reduceDriver.runTest();
+	}
+	
+	@Test
+	public void testMapReduce() throws IOException {
+		mapreduceDriver.withInput(new LongWritable(), new Text("ABE-PIT	6.041666666666667"))
+		.withInput(new LongWritable(), new Text("ABQ-BWI	-6.5"));
+		
+		mapreduceDriver.withOutput(new Text("ABE-PIT"), new DoubleWritable(6.041666666666667))
+		.withOutput(new Text("ABQ-BWI"), new DoubleWritable(-6.5));
+		
+		mapreduceDriver.runTest();
+	}
 }
