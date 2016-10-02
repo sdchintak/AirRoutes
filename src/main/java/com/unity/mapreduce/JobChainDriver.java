@@ -2,6 +2,7 @@ package com.unity.mapreduce;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -23,6 +24,12 @@ public class JobChainDriver extends Configured implements Tool {
 		Path outputPath = new Path(args[1]);
 		Path intPath = new Path("intermediate");
 		int code;
+		
+		// delete intermediate and output directories
+		
+		FileSystem local = FileSystem.getLocal(conf);
+		local.delete(intPath, true);
+		local.delete(outputPath, true);
 		
 		// JOB - 1
 		
