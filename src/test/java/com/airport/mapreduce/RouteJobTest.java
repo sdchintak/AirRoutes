@@ -1,4 +1,4 @@
-package com.unity.mapreduce;
+package com.airport.mapreduce;
 
 
 import java.io.IOException;
@@ -17,8 +17,9 @@ import org.apache.hadoop.mrunit.mapreduce.ReduceDriver;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.unity.mapreduce.RouteMapper;
-import com.unity.mapreduce.RouteMapper.COUNTERS;
+import com.airport.mapreduce.RouteMapper;
+import com.airport.mapreduce.RouteReducer;
+import com.airport.mapreduce.RouteMapper.COUNTERS;
 
 public class RouteJobTest {
 	MapDriver<LongWritable, Text, Text, IntWritable> mapDriver; 

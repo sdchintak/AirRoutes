@@ -1,4 +1,4 @@
-package com.unity.mapreduce;
+package com.airport.mapreduce;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,8 +13,9 @@ import org.apache.hadoop.mrunit.mapreduce.ReduceDriver;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.unity.mapreduce.RouteDelay;
-import com.unity.mapreduce.RouteDelayMapper;
+import com.airport.mapreduce.RouteDelay;
+import com.airport.mapreduce.RouteDelayMapper;
+import com.airport.mapreduce.RouteDelayReducer;
 
 
 public class RouteDelayJobTest {
